@@ -553,6 +553,22 @@
       return `${mins}:${secs}`;
     }
 
+    function getYearRange() {
+      const combined = [
+        ...(janRuns || []),
+        ...(febRuns || []),
+        ...(marRuns || []),
+        ...(aprRuns || [])
+      ];
+      if (!combined.length) return [15 * 60, 90 * 60];
+
+      const values = combined.map(r => toSeconds(r.time));
+      const maxVal = Math.max(...values);
+      const step = 15 * 60;
+      const roundedMax = Math.max(step, Math.ceil(maxVal / step) * step);
+      return [0, roundedMax];
+    }
+
     function drawRunChart(data, label = 'January run dates') {
       const svg = document.getElementById('runChart');
       if (!svg || !data.length) return;
@@ -569,17 +585,16 @@
         x: pad.left + (index * (innerW / Math.max(data.length - 1, 1)))
       }));
 
-      const minY = Math.min(...points.map(p => p.seconds)) - 20;
-      const maxY = Math.max(...points.map(p => p.seconds)) + 20;
+      const [minY, maxY] = getYearRange();
       const yScale = (sec) => pad.top + ((maxY - sec) / Math.max(maxY - minY, 1)) * innerH;
 
-      const yTicks = 5;
+      const step = 15 * 60;
       const grid = [];
-      for (let i = 0; i <= yTicks; i++) {
-        const value = minY + ((maxY - minY) / yTicks) * i;
+      for (let value = minY; value <= maxY; value += step) {
         const y = yScale(value);
+        const label = value === 0 ? '0' : `${Math.round(value / 60)}`;
         grid.push(`<line x1="${pad.left}" y1="${y}" x2="${width - pad.right}" y2="${y}" stroke="#e5e7eb" />`);
-        grid.push(`<text x="${pad.left - 10}" y="${y + 4}" text-anchor="end" font-size="11" fill="#6b7280">${formatMinutes(value)}</text>`);
+        grid.push(`<text x="${pad.left - 10}" y="${y + 4}" text-anchor="end" font-size="11" fill="#6b7280">${label}</text>`);
       }
 
       const path = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${yScale(p.seconds)}`).join(' ');
@@ -600,7 +615,7 @@
         ${circles}
         ${labels}
         <text x="${width / 2}" y="${height - 2}" text-anchor="middle" font-size="12" fill="#6b7280">${label}</text>
-        <text x="18" y="${height / 2}" transform="rotate(-90 18 ${height / 2})" text-anchor="middle" font-size="12" fill="#6b7280">Run time</text>
+        <text x="18" y="${height / 2}" transform="rotate(-90 18 ${height / 2})" text-anchor="middle" font-size="12" fill="#6b7280">Run time (mins)</text>
       `;
     }
 
@@ -613,6 +628,7 @@
           <option value="January">January</option>
           <option value="February">February</option>
           <option value="March">March</option>
+          <option value="April">April</option>
         `;
         periodSelect.value = 'January';
       } else if (view === 'quarter') {
@@ -644,16 +660,18 @@
       });
     }
 
-    let janRuns, febRuns, marRuns;
+    let janRuns, febRuns, marRuns, aprRuns;
 
     Promise.all([
       loadCSV('january.csv'),
       loadCSV('february.csv'),
-      loadCSV('march.csv')
-    ]).then(([jan, feb, mar]) => {
+      loadCSV('march.csv'),
+      loadCSV('april.csv')
+    ]).then(([jan, feb, mar, apr]) => {
       janRuns = jan;
       febRuns = feb;
       marRuns = mar;
+      aprRuns = apr;
       updatePeriodOptions();
       setStatsView();
     });
@@ -701,6 +719,14 @@
           statFastestLabel.textContent = 'fastest recorded March run';
           statAverageLabel.textContent = 'average March pace';
           chartNote.textContent = 'March is now wired in as well. You can switch between January and March in the same dashboard.';
+        } else if (period === 'April') {
+          runs = aprRuns;
+          label = 'April run dates';
+          statRunsLabel.textContent = 'recorded in April';
+          statDistanceLabel.textContent = 'captured from the uploaded log';
+          statFastestLabel.textContent = 'fastest recorded April run';
+          statAverageLabel.textContent = 'average April pace';
+          chartNote.textContent = 'April tracking is now live. Keep showing up and building consistency!';
         }
       } else if (view === 'quarter' && period === 'Q1') {
         runs = [...janRuns, ...febRuns, ...marRuns];
@@ -710,18 +736,14 @@
         statFastestLabel.textContent = 'fastest run in Q1';
         statAverageLabel.textContent = 'average pace across Q1';
         chartNote.textContent = 'This Q1 view combines January, February, and March into one progression chart.';
-      } else {
-        statRuns.textContent = 'Coming soon';
-        statRunsLabel.textContent = `${period} ${year} data will appear here`;
-        statDistance.textContent = '—';
-        statDistanceLabel.textContent = 'waiting for more uploaded data';
-        statFastest.textContent = '—';
-        statFastestLabel.textContent = 'fastest run will update automatically';
-        statAverage.textContent = '—';
-        statAverageLabel.textContent = 'average pace will update automatically';
-        chartNote.textContent = 'This view is ready. Once the remaining monthly data is added, the page can switch between month, quarter, and full-year summaries from the same dashboard.';
-        drawRunChart([{ date: '2026-01-01', distance: 1, time: '0:01:00' }], 'Awaiting more data');
-        return;
+      } else if (view === 'year') {
+        runs = [...janRuns, ...febRuns, ...marRuns, ...aprRuns];
+        label = 'Full Year 2026 runs';
+        statRunsLabel.textContent = 'in 2026';
+        statDistanceLabel.textContent = 'total 2026 distance';
+        statFastestLabel.textContent = 'fastest run in 2026';
+        statAverageLabel.textContent = 'average pace across 2026';
+        chartNote.textContent = 'Full year overview combining all months tracked so far.';
       }
 
       // Compute stats
