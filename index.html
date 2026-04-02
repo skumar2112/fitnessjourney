@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Consistency Journal</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --accent: #2563eb;
+      --accent-soft: #dbeafe;
+      --border: #e5e7eb;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      --radius: 18px;
+      --max: 960px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #eef4ff 0%, var(--bg) 100%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .container {
+      width: min(calc(100% - 32px), var(--max));
+      margin: 0 auto;
+    }
+
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(245, 247, 251, 0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(229, 231, 235, 0.9);
+    }
+
+    .top-nav .container {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 12px 0;
+      scrollbar-width: none;
+    }
+
+    .top-nav .container::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nav-link {
+      white-space: nowrap;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+      font-size: 0.95rem;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .nav-link:hover {
+      background: var(--accent-soft);
+      text-decoration: none;
+    }
+
+    header {
+      padding: 48px 0 32px;
+    }
+
+    .hero {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      padding: 36px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .tag {
+      display: inline-block;
+      background: var(--accent-soft);
+      color: var(--accent);
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      width: fit-content;
+    }
+
+    h1, h2, h3 {
+      margin: 0;
+      line-height: 1.2;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 700px;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 14px;
+      margin-top: 8px;
+    }
+
+    .stat {
+      background: #f9fafb;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.4rem;
+      margin-bottom: 4px;
+    }
+
+    main {
+      padding-bottom: 60px;
+    }
+
+    section {
+      margin: 28px 0;
+      scroll-margin-top: 88px;
+    }
+
+    .section-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 28px;
+    }
+
+    .entry-list {
+      display: grid;
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .entry {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      background: #fcfcfd;
+    }
+
+    .entry-meta {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+    }
+
+    .grid-two {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+    }
+
+    ul {
+      padding-left: 20px;
+      margin: 10px 0 0;
+    }
+
+    .quote {
+      border-left: 4px solid var(--accent);
+      padding-left: 16px;
+      color: var(--muted);
+      font-style: italic;
+      margin-top: 12px;
+    }
+
+    .dashboard-controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin: 18px 0;
+    }
+
+    .control-group {
+      display: grid;
+      gap: 8px;
+    }
+
+    .control-group label {
+      font-size: 0.92rem;
+      color: var(--muted);
+      font-weight: bold;
+    }
+
+    .control-group select {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      background: #fff;
+      font: inherit;
+      color: var(--text);
+    }
+
+    .chart-wrap {
+      margin-top: 18px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      background: #fcfcfd;
+    }
+
+    .chart-box {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    #runChart {
+      width: 100%;
+      height: 320px;
+      display: block;
+    }
+
+    .chart-summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .mini-stat {
+      background: #f9fafb;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .mini-stat strong {
+      display: block;
+      font-size: 1.1rem;
+      margin-bottom: 4px;
+    }
+
+    .chart-note {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-top: 12px;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      padding: 16px 0 40px;
+      font-size: 0.95rem;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 600px) {
+      .hero, .section-card {
+        padding: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="top-nav">
+    <div class="container">
+      <a class="nav-link" href="#home">Home</a>
+      <a class="nav-link" href="#about-me">About Me</a>
+      <a class="nav-link" href="#quick-snapshot">Quick Stats Snapshot</a>
+      <a class="nav-link" href="#stats">Stats</a>
+      <a class="nav-link" href="#reflections">Reflections</a>
+      <a class="nav-link" href="#current-focus">Current Focus</a>
+    </div>
+  </nav>
+
+  <header id="home">
+    <div class="container">
+      <div class="hero">
+        <span class="tag">Consistency Journal</span>
+        <h1>Three Months of Running and Showing Up</h1>
+        <p class="subtitle">
+          A simple public journal of my running journey so far — three months of discipline, consistency,
+          learning, and quietly building something stronger week by week.
+        </p>
+
+        <div class="hero-stats">
+          <div class="stat">
+            <strong>14 Weeks</strong>
+            <span>tracked so far</span>
+          </div>
+          <div class="stat">
+            <strong>67 Runs</strong>
+            <span>completed</span>
+          </div>
+          <div class="stat">
+            <strong>355 KM</strong>
+            <span>total distance</span>
+          </div>
+          <div class="stat">
+            <strong>1 Goal</strong>
+            <span>keep showing up</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <section>
+        <div class="section-card">
+          <h2>About this page</h2>
+          <p>
+            I built this page to keep a simple public record of my progress. It is not about being perfect.
+            It is about staying disciplined, learning from setbacks, and building a lifestyle around movement.
+          </p>
+          <p class="quote">
+            Consistency is not about intensity every day. It is about returning again and again.
+          </p>
+        </div>
+      </section>
+
+      <section id="about-me">
+        <div class="section-card">
+          <h2>About me</h2>
+          <div class="grid-two" style="margin-top: 18px; align-items: start;">
+            <div class="entry" style="text-align: center;">
+              <div style="width: 160px; height: 160px; border-radius: 50%; background: var(--accent-soft); margin: 0 auto 14px; display: flex; align-items: center; justify-content: center; color: var(--accent); font-weight: bold; border: 1px solid var(--border);">
+                Your Photo
+              </div>
+              <strong>Your Name</strong>
+              <div class="entry-meta" style="margin-top: 6px;">Runner • Builder • Showing up daily</div>
+            </div>
+            <div>
+              <p>
+                I am documenting this journey as a reminder to myself that progress does not need to be loud to be real.
+                Over these months, running has become more than exercise — it has become a practice of discipline,
+                mental strength, and self-respect.
+              </p>
+              <p>
+                This page also reflects my <strong>personal consistency mission</strong> — a commitment to steady progress,
+                self-discipline, and staying accountable over time.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="quick-snapshot">
+        <div class="section-card">
+          <h2>Quick stats snapshot</h2>
+          <div class="hero-stats" style="margin-top: 18px;">
+            <div class="stat">
+              <strong>355 KM</strong>
+              <span>completed in total</span>
+            </div>
+            <div class="stat">
+              <strong>~5 KG</strong>
+              <span>weight lost</span>
+            </div>
+            <div class="stat">
+              <strong>3 × 10K</strong>
+              <span>milestone runs</span>
+            </div>
+            <div class="stat">
+              <strong>1 × 15K</strong>
+              <span>longest run so far</span>
+            </div>
+            <div class="stat">
+              <strong>27:37</strong>
+              <span>fastest 5K this year</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="reflections">
+        <div class="section-card">
+          <h2>Reflections</h2>
+          <div class="entry-list">
+            <article class="entry">
+              <div class="entry-meta">January to March • 14 weeks of consistency</div>
+              <h3>What changed</h3>
+              <p>
+                What started as a simple attempt to get moving slowly turned into a real routine. The biggest change
+                was not just physical fitness, but becoming someone who shows up regularly, even on days when motivation
+                is low.
+              </p>
+            </article>
+
+            <article class="entry">
+              <div class="entry-meta">Quarter 1 • Distance, discipline, momentum</div>
+              <h3>What I learned</h3>
+              <p>
+                I learned that consistency matters more than perfection. Most runs were 5Ks, but the bigger win was
+                building rhythm. The 10Ks and 15K were milestones, but the real success was returning again and again.
+              </p>
+            </article>
+
+            <article class="entry">
+              <div class="entry-meta">From April onward • Weekly updates</div>
+              <h3>How this journal will continue</h3>
+              <p>
+                Instead of trying to recreate every early week in detail, this page will treat January to March as a
+                first-quarter snapshot. From April onward, I will add short weekly notes with a few lines on what I did,
+                how I felt, and what I noticed.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="stats">
+        <div class="section-card">
+          <h2>Stats</h2>
+          <p>
+            This section is designed to become the interactive dashboard of the site. For now, it is wired to January
+            2026 data, and later it can expand to month, quarter, and full-year views as more data is added.
+          </p>
+
+          <div class="dashboard-controls">
+            <div class="control-group">
+              <label for="yearSelect">Year</label>
+              <select id="yearSelect">
+                <option value="2026" selected>2026</option>
+              </select>
+            </div>
+            <div class="control-group">
+              <label for="viewSelect">View</label>
+              <select id="viewSelect">
+                <option value="month" selected>Month</option>
+                <option value="quarter">Quarter</option>
+                <option value="year">Full Year</option>
+              </select>
+            </div>
+            <div class="control-group">
+              <label for="periodSelect">Month / Quarter</label>
+              <select id="periodSelect">
+                <option value="January" selected>January</option>
+                <option value="February">February</option>
+                <option value="March">March</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="chart-wrap">
+            <div class="chart-box">
+              <svg id="runChart" viewBox="0 0 900 320" preserveAspectRatio="none" aria-label="Running chart"></svg>
+            </div>
+            <div class="chart-summary">
+              <div class="mini-stat">
+                <strong id="statRuns">21 Runs</strong>
+                <span id="statRunsLabel">recorded in January</span>
+              </div>
+              <div class="mini-stat">
+                <strong id="statDistance">105.11 KM</strong>
+                <span id="statDistanceLabel">captured from the uploaded log</span>
+              </div>
+              <div class="mini-stat">
+                <strong id="statFastest">31:38</strong>
+                <span id="statFastestLabel">fastest recorded January run</span>
+              </div>
+              <div class="mini-stat">
+                <strong id="statAverage">6:52 / KM</strong>
+                <span id="statAverageLabel">average January pace</span>
+              </div>
+            </div>
+            <p class="chart-note" id="chartNote">
+              The line above currently shows January run times. Once more months are added, this same section can switch
+              between monthly, quarterly, and year-wide views without cluttering the page.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid-two">
+        <div class="section-card">
+          <h2>What is improving</h2>
+          <ul>
+            <li>Discipline is stronger than before</li>
+            <li>Running feels more natural week by week</li>
+            <li>Stamina has improved across longer efforts</li>
+            <li>Mental resistance before starting is much lower</li>
+          </ul>
+        </div>
+
+        <div class="section-card" id="current-focus">
+          <h2>Current focus</h2>
+          <ul>
+            <li>Keep showing up without overthinking</li>
+            <li>Add weekly reflections from April onward</li>
+            <li>Continue building endurance steadily</li>
+            <li>Protect consistency over chasing perfection</li>
+          </ul>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-card">
+          <h2>Next step</h2>
+          <p>
+            This page starts as a simple one-page journal, but over time it can grow into a fuller personal site with
+            separate sections for weekly logs, milestone runs, reflections, photos, and lessons from the journey.
+          </p>
+          <p>
+            For now, the mission stays simple: keep running, keep writing, and keep showing up.
+          </p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      Built as a simple personal website. Replace this with your name, Instagram, YouTube, or any social links you want to share.
+    </div>
+  </footer>
+
+  <script>
+    function toSeconds(value) {
+      const parts = value.split(':').map(Number);
+      return (parts[0] * 3600) + (parts[1] * 60) + parts[2];
+    }
+
+    function formatMinutes(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.round(seconds % 60).toString().padStart(2, '0');
+      return `${mins}:${secs}`;
+    }
+
+    function drawRunChart(data, label = 'January run dates') {
+      const svg = document.getElementById('runChart');
+      if (!svg || !data.length) return;
+
+      const width = 900;
+      const height = 320;
+      const pad = { top: 20, right: 24, bottom: 42, left: 56 };
+      const innerW = width - pad.left - pad.right;
+      const innerH = height - pad.top - pad.bottom;
+
+      const points = data.map((run, index) => ({
+        ...run,
+        seconds: toSeconds(run.time),
+        x: pad.left + (index * (innerW / Math.max(data.length - 1, 1)))
+      }));
+
+      const minY = Math.min(...points.map(p => p.seconds)) - 20;
+      const maxY = Math.max(...points.map(p => p.seconds)) + 20;
+      const yScale = (sec) => pad.top + ((maxY - sec) / Math.max(maxY - minY, 1)) * innerH;
+
+      const yTicks = 5;
+      const grid = [];
+      for (let i = 0; i <= yTicks; i++) {
+        const value = minY + ((maxY - minY) / yTicks) * i;
+        const y = yScale(value);
+        grid.push(`<line x1="${pad.left}" y1="${y}" x2="${width - pad.right}" y2="${y}" stroke="#e5e7eb" />`);
+        grid.push(`<text x="${pad.left - 10}" y="${y + 4}" text-anchor="end" font-size="11" fill="#6b7280">${formatMinutes(value)}</text>`);
+      }
+
+      const path = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${yScale(p.seconds)}`).join(' ');
+      const circles = points.map(p => (
+        `<circle cx="${p.x}" cy="${yScale(p.seconds)}" r="4" fill="#2563eb"><title>${p.date} • ${p.distance} km • ${p.time}</title></circle>`
+      )).join('');
+
+      const labels = points.filter((_, i) => i % 3 === 0 || i === points.length - 1).map(p => (
+        `<text x="${p.x}" y="${height - 16}" text-anchor="middle" font-size="11" fill="#6b7280">${new Date(p.date).getDate()}</text>`
+      )).join('');
+
+      svg.innerHTML = `
+        <rect x="0" y="0" width="${width}" height="${height}" fill="white"></rect>
+        ${grid.join('')}
+        <line x1="${pad.left}" y1="${height - pad.bottom}" x2="${width - pad.right}" y2="${height - pad.bottom}" stroke="#9ca3af" />
+        <line x1="${pad.left}" y1="${pad.top}" x2="${pad.left}" y2="${height - pad.bottom}" stroke="#9ca3af" />
+        <path d="${path}" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+        ${circles}
+        ${labels}
+        <text x="${width / 2}" y="${height - 2}" text-anchor="middle" font-size="12" fill="#6b7280">${label}</text>
+        <text x="18" y="${height / 2}" transform="rotate(-90 18 ${height / 2})" text-anchor="middle" font-size="12" fill="#6b7280">Run time</text>
+      `;
+    }
+
+    function updatePeriodOptions() {
+      const view = document.getElementById('viewSelect').value;
+      const periodSelect = document.getElementById('periodSelect');
+
+      if (view === 'month') {
+        periodSelect.innerHTML = `
+          <option value="January">January</option>
+          <option value="February">February</option>
+          <option value="March">March</option>
+        `;
+        periodSelect.value = 'January';
+      } else if (view === 'quarter') {
+        periodSelect.innerHTML = `<option value="Q1">Q1</option>`;
+        periodSelect.value = 'Q1';
+      } else {
+        periodSelect.innerHTML = `<option value="2026">Full Year 2026</option>`;
+        periodSelect.value = '2026';
+      }
+    }
+
+    async function loadCSV(url) {
+      const response = await fetch(url);
+      const csv = await response.text();
+      return parseCSV(csv);
+    }
+
+    function parseCSV(csv) {
+      const lines = csv.trim().split('\n');
+      lines.shift(); // remove header
+      return lines.map(line => {
+        const parts = line.split(',');
+        const date = parts[0];
+        const dist = parseFloat(parts[1]);
+        const time = parts[2];
+        const [d, m, y] = date.split('/');
+        const isoDate = `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
+        return { date: isoDate, distance: dist, time };
+      });
+    }
+
+    let janRuns, febRuns, marRuns;
+
+    Promise.all([
+      loadCSV('january.csv'),
+      loadCSV('february.csv'),
+      loadCSV('march.csv')
+    ]).then(([jan, feb, mar]) => {
+      janRuns = jan;
+      febRuns = feb;
+      marRuns = mar;
+      updatePeriodOptions();
+      setStatsView();
+    });
+
+    function setStatsView() {
+      const year = document.getElementById('yearSelect').value;
+      const view = document.getElementById('viewSelect').value;
+      const period = document.getElementById('periodSelect').value;
+
+      const statRuns = document.getElementById('statRuns');
+      const statRunsLabel = document.getElementById('statRunsLabel');
+      const statDistance = document.getElementById('statDistance');
+      const statDistanceLabel = document.getElementById('statDistanceLabel');
+      const statFastest = document.getElementById('statFastest');
+      const statFastestLabel = document.getElementById('statFastestLabel');
+      const statAverage = document.getElementById('statAverage');
+      const statAverageLabel = document.getElementById('statAverageLabel');
+      const chartNote = document.getElementById('chartNote');
+
+      let runs = [];
+      let label = '';
+
+      if (view === 'month') {
+        if (period === 'January') {
+          runs = janRuns;
+          label = 'January run dates';
+          statRunsLabel.textContent = 'recorded in January';
+          statDistanceLabel.textContent = 'captured from the uploaded log';
+          statFastestLabel.textContent = 'fastest recorded January run';
+          statAverageLabel.textContent = 'average January pace';
+          chartNote.textContent = 'The line above currently shows January run times. Once more months are added, this same section can switch between monthly, quarterly, and year-wide views without cluttering the page.';
+        } else if (period === 'February') {
+          runs = febRuns;
+          label = 'February run dates';
+          statRunsLabel.textContent = 'recorded in February';
+          statDistanceLabel.textContent = 'captured from the uploaded log';
+          statFastestLabel.textContent = 'fastest recorded February run';
+          statAverageLabel.textContent = 'average February pace';
+          chartNote.textContent = 'February is now part of the dashboard. You can compare month-on-month progress directly.';
+        } else if (period === 'March') {
+          runs = marRuns;
+          label = 'March run dates';
+          statRunsLabel.textContent = 'recorded in March';
+          statDistanceLabel.textContent = 'captured from the uploaded log';
+          statFastestLabel.textContent = 'fastest recorded March run';
+          statAverageLabel.textContent = 'average March pace';
+          chartNote.textContent = 'March is now wired in as well. You can switch between January and March in the same dashboard.';
+        }
+      } else if (view === 'quarter' && period === 'Q1') {
+        runs = [...janRuns, ...febRuns, ...marRuns];
+        label = 'Q1 combined runs';
+        statRunsLabel.textContent = 'in Q1 2026';
+        statDistanceLabel.textContent = 'total Q1 distance';
+        statFastestLabel.textContent = 'fastest run in Q1';
+        statAverageLabel.textContent = 'average pace across Q1';
+        chartNote.textContent = 'This Q1 view combines January, February, and March into one progression chart.';
+      } else {
+        statRuns.textContent = 'Coming soon';
+        statRunsLabel.textContent = `${period} ${year} data will appear here`;
+        statDistance.textContent = '—';
+        statDistanceLabel.textContent = 'waiting for more uploaded data';
+        statFastest.textContent = '—';
+        statFastestLabel.textContent = 'fastest run will update automatically';
+        statAverage.textContent = '—';
+        statAverageLabel.textContent = 'average pace will update automatically';
+        chartNote.textContent = 'This view is ready. Once the remaining monthly data is added, the page can switch between month, quarter, and full-year summaries from the same dashboard.';
+        drawRunChart([{ date: '2026-01-01', distance: 1, time: '0:01:00' }], 'Awaiting more data');
+        return;
+      }
+
+      // Compute stats
+      const numRuns = runs.length;
+      const totalDist = runs.reduce((sum, r) => sum + r.distance, 0);
+      const fastest = runs.reduce((min, r) => toSeconds(r.time) < toSeconds(min) ? r.time : min, '99:99:99');
+      const totalTimeSec = runs.reduce((sum, r) => sum + toSeconds(r.time), 0);
+      const avgPaceSec = totalTimeSec / totalDist;
+      const avgPace = formatMinutes(Math.round(avgPaceSec));
+
+      statRuns.textContent = numRuns + ' Runs';
+      statDistance.textContent = totalDist.toFixed(2) + ' KM';
+      statFastest.textContent = fastest;
+      statAverage.textContent = avgPace + ' / KM';
+
+      drawRunChart(runs, label);
+    }
+
+    document.getElementById('viewSelect').addEventListener('change', () => {
+      updatePeriodOptions();
+      setStatsView();
+    });
+
+    document.getElementById('periodSelect').addEventListener('change', setStatsView);
+  </script>
+</body>
+</html>
