@@ -715,10 +715,10 @@
     let janRuns, febRuns, marRuns, aprRuns;
 
     Promise.all([
-      loadCSV('january.csv'),
-      loadCSV('february.csv'),
-      loadCSV('march.csv'),
-      loadCSV('april.csv')
+      loadCSV('runninglogs/january.csv'),
+      loadCSV('runninglogs/february.csv'),
+      loadCSV('runninglogs/march.csv'),
+      loadCSV('runninglogs/april.csv')
     ]).then(([jan, feb, mar, apr]) => {
       janRuns = jan;
       febRuns = feb;
