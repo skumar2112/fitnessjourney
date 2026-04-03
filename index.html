@@ -110,12 +110,13 @@
     .subtitle {
       color: var(--muted);
       font-size: 1.05rem;
-      max-width: 700px;
+      max-width: 980px;
+      margin: 0;
     }
 
     .hero-stats {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 14px;
       margin-top: 8px;
     }
@@ -276,9 +277,19 @@
       text-decoration: underline;
     }
 
+    @media (max-width: 900px) {
+      .hero-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
     @media (max-width: 600px) {
       .hero, .section-card {
         padding: 22px;
+      }
+
+      .hero-stats {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -298,7 +309,7 @@
   <header id="home">
     <div class="container">
       <div class="hero">
-        <span class="tag">Running Journal 2026</span>
+        <span class="tag">Progress Journal 2026</span>
         <h1>Built on Consistency</h1>
         <p class="subtitle">
           A simple public record of my running journey this year — showing up consistently, learning through the process,
@@ -307,44 +318,16 @@
         <p class="subtitle">
           A year of showing up, learning through the process, and steadily building a stronger rhythm—one day at a time.
         </p>
+        <p class="subtitle">
+          No big plan. Just showing, one day at a time.
+        </p>
 
-        <div class="hero-stats">
-          <div class="stat">
-            <strong>14 Weeks</strong>
-            <span>tracked so far</span>
-          </div>
-          <div class="stat">
-            <strong>67 Runs</strong>
-            <span>completed</span>
-          </div>
-          <div class="stat">
-            <strong>355 KM</strong>
-            <span>total distance</span>
-          </div>
-          <div class="stat">
-            <strong>1 Goal</strong>
-            <span>keep showing up</span>
-          </div>
-        </div>
       </div>
     </div>
   </header>
 
   <main>
     <div class="container">
-      <section>
-        <div class="section-card">
-          <h2>About this page</h2>
-          <p>
-            I built this page to keep a simple public record of my progress. It is not about being perfect.
-            It is about staying disciplined, learning from setbacks, and building a lifestyle around movement.
-          </p>
-          <p class="quote">
-            Consistency is not about intensity every day. It is about returning again and again.
-          </p>
-        </div>
-      </section>
-
       <section id="about-me">
         <div class="section-card">
           <h2>About me</h2>
@@ -353,8 +336,8 @@
               <div style="width: 220px; height: 220px; border-radius: 50%; background: var(--accent-soft); margin: 0 auto 14px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid var(--border);">
                 <img src="DP2.jpg" alt="Profile Picture" style="width: 100%; height: 100%; object-fit: cover; object-position: top; display: block;">
               </div>
-              <strong style="display: block; margin-top: 8px;">Vicky</strong>
-              <div class="entry-meta" style="margin-top: 6px;">Runner • Showing up daily</div>
+              <strong style="display: block; margin-top: 8px;">Shailesh K</strong>
+              <div class="entry-meta" style="margin-top: 6px;">Discipline over motivation</div>
             </div>
             <div>
               <p>
@@ -371,29 +354,46 @@
         </div>
       </section>
 
+      <section>
+        <div class="section-card">
+          <h2>About this page</h2>
+          <p>
+            I built this page to keep a simple public record of my progress. It is not about being perfect.
+            It is about staying disciplined, learning from setbacks, and building a lifestyle around movement.
+          </p>
+          <p class="quote">
+            Consistency is not about intensity every day. It is about returning again and again.
+          </p>
+        </div>
+      </section>
+
       <section id="quick-snapshot">
         <div class="section-card">
           <h2>Quick stats snapshot</h2>
           <div class="hero-stats" style="margin-top: 18px;">
             <div class="stat">
-              <strong>355 KM</strong>
-              <span>completed in total</span>
+              <strong id="quickWeeks">14 Weeks</strong>
+              <span>tracked so far</span>
             </div>
             <div class="stat">
-              <strong>5.2 Kilos</strong>
-              <span>weight lost</span>
+              <strong id="quickRuns">67 Runs</strong>
+              <span>completed</span>
             </div>
             <div class="stat">
-              <strong>62 x 5K</strong>
-              <span>fastest 27:37</span>
-            </div>            
-            <div class="stat">
-              <strong>3 × 10K</strong>
-              <span>fastest 58:19</span>
+              <strong id="quickDistance">355 KM</strong>
+              <span>total distance</span>
             </div>
             <div class="stat">
-              <strong>1 × 15K</strong>
-              <span>fastest 1:33:34</span>
+              <strong id="quick5k">62 × 5K</strong>
+              <span id="quick5kSub">fastest 27:37</span>
+            </div>
+            <div class="stat">
+              <strong id="quick10k">3 × 10K</strong>
+              <span id="quick10kSub">fastest 58:19</span>
+            </div>
+            <div class="stat">
+              <strong id="quick15k">1 × 15K</strong>
+              <span id="quick15kSub">fastest 1:33:34</span>
             </div>
           </div>
         </div>
@@ -404,7 +404,7 @@
           <h2>Reflections</h2>
           <div class="entry-list">
             <article class="entry">
-              <div class="entry-meta">January to March • 14 weeks of consistency</div>
+              <div class="entry-meta">January to March 2026 • First-quarter consistency</div>
               <h3>What changed</h3>
               <p>
                 What started as a simple attempt to get moving slowly turned into a real routine. The biggest change
@@ -423,12 +423,12 @@
             </article>
 
             <article class="entry">
-              <div class="entry-meta">From April onward • Weekly updates</div>
-              <h3>How this journal will continue</h3>
+              <div class="entry-meta">Looking ahead • Staying consistent</div>
+              <h3>What matters most now</h3>
               <p>
-                Instead of trying to recreate every early week in detail, this page will treat January to March as a
-                first-quarter snapshot. From April onward, I will add short weekly notes with a few lines on what I did,
-                how I felt, and what I noticed.
+                The focus now is not on making the journey look perfect. It is on continuing to show up, staying honest
+                with the process, and letting small efforts compound over time. Progress is being built through rhythm,
+                patience, and consistency more than anything else.
               </p>
             </article>
           </div>
@@ -553,13 +553,65 @@
       return `${mins}:${secs}`;
     }
 
-    function getYearRange() {
-      const combined = [
+    function formatRunTime(time) {
+      return time.startsWith('0:') ? time.slice(2) : time;
+    }
+
+    function getAllRuns() {
+      return [
         ...(janRuns || []),
         ...(febRuns || []),
         ...(marRuns || []),
         ...(aprRuns || [])
       ];
+    }
+
+    function getTrackedWeeks(runs) {
+      if (!runs.length) return 0;
+      const dates = runs.map(run => new Date(run.date).getTime());
+      const first = Math.min(...dates);
+      const last = Math.max(...dates);
+      return Math.floor((last - first) / (7 * 24 * 60 * 60 * 1000)) + 1;
+    }
+
+    function getDistanceStats(runs, target, tolerance) {
+      const filtered = runs.filter(run => Math.abs(run.distance - target) <= tolerance);
+      if (!filtered.length) {
+        return { count: 0, fastest: '—' };
+      }
+
+      const fastest = filtered.reduce((best, run) =>
+        toSeconds(run.time) < toSeconds(best.time) ? run : best
+      );
+
+      return {
+        count: filtered.length,
+        fastest: formatRunTime(fastest.time)
+      };
+    }
+
+    function updateQuickSnapshot() {
+      const runs = getAllRuns();
+      if (!runs.length) return;
+
+      const totalDistance = runs.reduce((sum, run) => sum + run.distance, 0);
+      const fiveK = getDistanceStats(runs, 5, 0.2);
+      const tenK = getDistanceStats(runs, 10, 0.3);
+      const fifteenK = getDistanceStats(runs, 15, 0.5);
+
+      document.getElementById('quickWeeks').textContent = `${getTrackedWeeks(runs)} Weeks`;
+      document.getElementById('quickRuns').textContent = `${runs.length} Runs`;
+      document.getElementById('quickDistance').textContent = `${Math.round(totalDistance)} KM`;
+      document.getElementById('quick5k').textContent = `${fiveK.count} × 5K`;
+      document.getElementById('quick5kSub').textContent = `fastest ${fiveK.fastest}`;
+      document.getElementById('quick10k').textContent = `${tenK.count} × 10K`;
+      document.getElementById('quick10kSub').textContent = `fastest ${tenK.fastest}`;
+      document.getElementById('quick15k').textContent = `${fifteenK.count} × 15K`;
+      document.getElementById('quick15kSub').textContent = `fastest ${fifteenK.fastest}`;
+    }
+
+    function getYearRange() {
+      const combined = getAllRuns();
       if (!combined.length) return [15 * 60, 90 * 60];
 
       const values = combined.map(r => toSeconds(r.time));
@@ -673,6 +725,7 @@
       marRuns = mar;
       aprRuns = apr;
       updatePeriodOptions();
+      updateQuickSnapshot();
       setStatsView();
     });
 
