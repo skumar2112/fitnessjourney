@@ -1,0 +1,10 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+logs/
+docs/
+scripts/
+strava-stats-preview.html
+data/raw/*.json

@@ -439,8 +439,8 @@
         <div class="section-card">
           <h2>Stats</h2>
           <p>
-            This section is designed to become the interactive dashboard of the site. For now, it is wired to January
-            2026 data, and later it can expand to month, quarter, and full-year views as more data is added.
+            This dashboard is now driven by synced Strava data so you can switch between month, quarter, and full-year
+            views across runs, walks, gym sessions, and any other activity types you log.
           </p>
 
           <div class="dashboard-controls">
@@ -464,35 +464,44 @@
                 <option value="January" selected>January</option>
                 <option value="February">February</option>
                 <option value="March">March</option>
+                <option value="April">April</option>
+              </select>
+            </div>
+            <div class="control-group">
+              <label for="activityTypeSelect">Activity Type</label>
+              <select id="activityTypeSelect">
+                <option value="All" selected>All Activities</option>
+                <option value="Run">Runs</option>
+                <option value="Walk">Walks</option>
+                <option value="WeightTraining">Gym</option>
               </select>
             </div>
           </div>
 
           <div class="chart-wrap">
             <div class="chart-box">
-              <svg id="runChart" viewBox="0 0 900 320" preserveAspectRatio="none" aria-label="Running chart"></svg>
+              <svg id="runChart" viewBox="0 0 900 320" preserveAspectRatio="none" aria-label="Activity chart"></svg>
             </div>
             <div class="chart-summary">
               <div class="mini-stat">
-                <strong id="statRuns">21 Runs</strong>
-                <span id="statRunsLabel">recorded in January</span>
+                <strong id="statRuns">All Activities</strong>
+                <span id="statRunsLabel">loading synced Strava data</span>
               </div>
               <div class="mini-stat">
-                <strong id="statDistance">105.11 KM</strong>
-                <span id="statDistanceLabel">captured from the uploaded log</span>
+                <strong id="statDistance">Runs —</strong>
+                <span id="statDistanceLabel">running total</span>
               </div>
               <div class="mini-stat">
-                <strong id="statFastest">31:38</strong>
-                <span id="statFastestLabel">fastest recorded January run</span>
+                <strong id="statFastest">Walks —</strong>
+                <span id="statFastestLabel">walking total</span>
               </div>
               <div class="mini-stat">
-                <strong id="statAverage">6:52 / KM</strong>
-                <span id="statAverageLabel">average January pace</span>
+                <strong id="statAverage">Gym —</strong>
+                <span id="statAverageLabel">gym training time</span>
               </div>
             </div>
             <p class="chart-note" id="chartNote">
-              The line above currently shows January run times. Once more months are added, this same section can switch
-              between monthly, quarterly, and year-wide views without cluttering the page.
+              Loading synced Strava activity data for the interactive dashboard.
             </p>
           </div>
         </div>
@@ -554,7 +563,15 @@
     }
 
     function formatRunTime(time) {
+      if (!time) return '—';
       return time.startsWith('0:') ? time.slice(2) : time;
+    }
+
+    function formatDuration(seconds) {
+      const hrs = Math.floor(seconds / 3600);
+      const mins = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
+      const secs = Math.round(seconds % 60).toString().padStart(2, '0');
+      return `${hrs}:${mins}:${secs}`;
     }
 
     function getAllRuns() {
@@ -563,7 +580,7 @@
         ...(febRuns || []),
         ...(marRuns || []),
         ...(aprRuns || [])
-      ];
+      ].filter(activity => (activity.sportType || 'Run') === 'Run');
     }
 
     function getTrackedWeeks(runs) {
@@ -610,18 +627,23 @@
       document.getElementById('quick15kSub').textContent = `fastest ${fifteenK.fastest}`;
     }
 
-    function getYearRange() {
-      const combined = getAllRuns();
-      if (!combined.length) return [15 * 60, 90 * 60];
+    function getYearRange(data = getAllRuns()) {
+      if (!data.length) return [15 * 60, 90 * 60];
 
-      const values = combined.map(r => toSeconds(r.time));
+      const values = data.map(item => Number(item.seconds || toSeconds(item.time)));
       const maxVal = Math.max(...values);
       const step = 15 * 60;
       const roundedMax = Math.max(step, Math.ceil(maxVal / step) * step);
       return [0, roundedMax];
     }
 
-    function drawRunChart(data, label = 'January run dates') {
+    function getActivityColor(sportType) {
+      if (sportType === 'Walk') return '#10b981';
+      if (sportType === 'WeightTraining') return '#7c3aed';
+      return '#2563eb';
+    }
+
+    function drawRunChart(data, label = 'Activity dates') {
       const svg = document.getElementById('runChart');
       if (!svg || !data.length) return;
 
@@ -633,25 +655,28 @@
 
       const points = data.map((run, index) => ({
         ...run,
-        seconds: toSeconds(run.time),
+        seconds: Number(run.seconds || toSeconds(run.time)),
         x: pad.left + (index * (innerW / Math.max(data.length - 1, 1)))
       }));
 
-      const [minY, maxY] = getYearRange();
+      const [minY, maxY] = getYearRange(data);
       const yScale = (sec) => pad.top + ((maxY - sec) / Math.max(maxY - minY, 1)) * innerH;
+      const lineColor = points.length && new Set(points.map(point => point.sportType || 'Run')).size === 1
+        ? getActivityColor(points[0].sportType || 'Run')
+        : '#2563eb';
 
       const step = 15 * 60;
       const grid = [];
       for (let value = minY; value <= maxY; value += step) {
         const y = yScale(value);
-        const label = value === 0 ? '0' : `${Math.round(value / 60)}`;
+        const tickLabel = value === 0 ? '0' : `${Math.round(value / 60)}`;
         grid.push(`<line x1="${pad.left}" y1="${y}" x2="${width - pad.right}" y2="${y}" stroke="#e5e7eb" />`);
-        grid.push(`<text x="${pad.left - 10}" y="${y + 4}" text-anchor="end" font-size="11" fill="#6b7280">${label}</text>`);
+        grid.push(`<text x="${pad.left - 10}" y="${y + 4}" text-anchor="end" font-size="11" fill="#6b7280">${tickLabel}</text>`);
       }
 
       const path = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${yScale(p.seconds)}`).join(' ');
       const circles = points.map(p => (
-        `<circle cx="${p.x}" cy="${yScale(p.seconds)}" r="4" fill="#2563eb"><title>${p.date} • ${p.distance} km • ${p.time}</title></circle>`
+        `<circle cx="${p.x}" cy="${yScale(p.seconds)}" r="4" fill="${getActivityColor(p.sportType || 'Run')}"><title>${p.date} • ${p.sportType || 'Run'} • ${p.distance.toFixed(2)} km • ${p.time} • ${p.name || ''}</title></circle>`
       )).join('');
 
       const labels = points.filter((_, i) => i % 3 === 0 || i === points.length - 1).map(p => (
@@ -663,11 +688,11 @@
         ${grid.join('')}
         <line x1="${pad.left}" y1="${height - pad.bottom}" x2="${width - pad.right}" y2="${height - pad.bottom}" stroke="#9ca3af" />
         <line x1="${pad.left}" y1="${pad.top}" x2="${pad.left}" y2="${height - pad.bottom}" stroke="#9ca3af" />
-        <path d="${path}" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="${path}" fill="none" stroke="${lineColor}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
         ${circles}
         ${labels}
         <text x="${width / 2}" y="${height - 2}" text-anchor="middle" font-size="12" fill="#6b7280">${label}</text>
-        <text x="18" y="${height / 2}" transform="rotate(-90 18 ${height / 2})" text-anchor="middle" font-size="12" fill="#6b7280">Run time (mins)</text>
+        <text x="18" y="${height / 2}" transform="rotate(-90 18 ${height / 2})" text-anchor="middle" font-size="12" fill="#6b7280">Activity time (mins)</text>
       `;
     }
 
@@ -692,47 +717,74 @@
       }
     }
 
-    async function loadCSV(url) {
-      const response = await fetch(url);
-      const csv = await response.text();
-      return parseCSV(csv);
+    function normalizeSiteActivities(items = []) {
+      return items.map(item => ({
+        date: item.date,
+        distance: Number(item.distance || 0),
+        time: item.time,
+        seconds: Number(item.seconds || toSeconds(item.time)),
+        sportType: item.sportType || 'Run',
+        name: item.name || (item.sportType || 'Run')
+      }));
     }
 
-    function parseCSV(csv) {
-      const lines = csv.trim().split('\n');
-      lines.shift(); // remove header
-      return lines.map(line => {
-        const parts = line.split(',');
-        const date = parts[0];
-        const dist = parseFloat(parts[1]);
-        const time = parts[2];
-        const [d, m, y] = date.split('/');
-        const isoDate = `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
-        return { date: isoDate, distance: dist, time };
-      });
+    function formatActivityLabel(type, plural = false) {
+      if (type === 'Run') return plural ? 'Runs' : 'Run';
+      if (type === 'Walk') return plural ? 'Walks' : 'Walk';
+      if (type === 'WeightTraining') return plural ? 'Gym Sessions' : 'Gym Session';
+      return plural ? 'Activities' : 'Activity';
     }
 
-    let janRuns, febRuns, marRuns, aprRuns;
+    function getViewContext(view, period) {
+      if (view === 'month') return 'for the selected month';
+      if (view === 'quarter') return `across ${period} 2026`;
+      return 'across 2026';
+    }
 
-    Promise.all([
-      loadCSV('runninglogs/january.csv'),
-      loadCSV('runninglogs/february.csv'),
-      loadCSV('runninglogs/march.csv'),
-      loadCSV('runninglogs/april.csv')
-    ]).then(([jan, feb, mar, apr]) => {
-      janRuns = jan;
-      febRuns = feb;
-      marRuns = mar;
-      aprRuns = apr;
+    function sumDistance(items) {
+      return items.reduce((sum, item) => sum + item.distance, 0);
+    }
+
+    function sumSeconds(items) {
+      return items.reduce((sum, item) => sum + item.seconds, 0);
+    }
+
+    let janRuns = [];
+    let febRuns = [];
+    let marRuns = [];
+    let aprRuns = [];
+
+    async function loadSiteData() {
+      const response = await fetch(`data/site/strava_site_data.json?t=${Date.now()}`, { cache: 'no-store' });
+      if (!response.ok) {
+        throw new Error(`Unable to load generated Strava site data (${response.status}). Run the Strava sync script to refresh the website data.`);
+      }
+
+      const siteData = await response.json();
+      const months = siteData.activityMonths || siteData.months || {};
+
+      janRuns = normalizeSiteActivities(months.January || []);
+      febRuns = normalizeSiteActivities(months.February || []);
+      marRuns = normalizeSiteActivities(months.March || []);
+      aprRuns = normalizeSiteActivities(months.April || []);
+
       updatePeriodOptions();
       updateQuickSnapshot();
       setStatsView();
+    }
+
+    loadSiteData().catch(error => {
+      console.error(error);
+      const chartNote = document.getElementById('chartNote');
+      if (chartNote) {
+        chartNote.textContent = 'Unable to load synced Strava site data. Please run the Python sync script and refresh the page.';
+      }
     });
 
     function setStatsView() {
-      const year = document.getElementById('yearSelect').value;
       const view = document.getElementById('viewSelect').value;
       const period = document.getElementById('periodSelect').value;
+      const activityType = document.getElementById('activityTypeSelect').value;
 
       const statRuns = document.getElementById('statRuns');
       const statRunsLabel = document.getElementById('statRunsLabel');
@@ -743,76 +795,100 @@
       const statAverage = document.getElementById('statAverage');
       const statAverageLabel = document.getElementById('statAverageLabel');
       const chartNote = document.getElementById('chartNote');
+      const context = getViewContext(view, period);
 
-      let runs = [];
+      let activities = [];
       let label = '';
 
       if (view === 'month') {
-        if (period === 'January') {
-          runs = janRuns;
-          label = 'January run dates';
-          statRunsLabel.textContent = 'recorded in January';
-          statDistanceLabel.textContent = 'captured from the uploaded log';
-          statFastestLabel.textContent = 'fastest recorded January run';
-          statAverageLabel.textContent = 'average January pace';
-          chartNote.textContent = 'The line above currently shows January run times. Once more months are added, this same section can switch between monthly, quarterly, and year-wide views without cluttering the page.';
-        } else if (period === 'February') {
-          runs = febRuns;
-          label = 'February run dates';
-          statRunsLabel.textContent = 'recorded in February';
-          statDistanceLabel.textContent = 'captured from the uploaded log';
-          statFastestLabel.textContent = 'fastest recorded February run';
-          statAverageLabel.textContent = 'average February pace';
-          chartNote.textContent = 'February is now part of the dashboard. You can compare month-on-month progress directly.';
-        } else if (period === 'March') {
-          runs = marRuns;
-          label = 'March run dates';
-          statRunsLabel.textContent = 'recorded in March';
-          statDistanceLabel.textContent = 'captured from the uploaded log';
-          statFastestLabel.textContent = 'fastest recorded March run';
-          statAverageLabel.textContent = 'average March pace';
-          chartNote.textContent = 'March is now wired in as well. You can switch between January and March in the same dashboard.';
-        } else if (period === 'April') {
-          runs = aprRuns;
-          label = 'April run dates';
-          statRunsLabel.textContent = 'recorded in April';
-          statDistanceLabel.textContent = 'captured from the uploaded log';
-          statFastestLabel.textContent = 'fastest recorded April run';
-          statAverageLabel.textContent = 'average April pace';
-          chartNote.textContent = 'April tracking is now live. Keep showing up and building consistency!';
-        }
+        const monthActivities = {
+          January: janRuns,
+          February: febRuns,
+          March: marRuns,
+          April: aprRuns
+        };
+        activities = monthActivities[period] || [];
+        label = `${period} ${activityType === 'All' ? 'activities' : formatActivityLabel(activityType, true).toLowerCase()}`;
+        chartNote.textContent = `${period} view sourced directly from the synced Strava dataset.`;
       } else if (view === 'quarter' && period === 'Q1') {
-        runs = [...janRuns, ...febRuns, ...marRuns];
-        label = 'Q1 combined runs';
-        statRunsLabel.textContent = 'in Q1 2026';
-        statDistanceLabel.textContent = 'total Q1 distance';
-        statFastestLabel.textContent = 'fastest run in Q1';
-        statAverageLabel.textContent = 'average pace across Q1';
-        chartNote.textContent = 'This Q1 view combines January, February, and March into one progression chart.';
+        activities = [...janRuns, ...febRuns, ...marRuns];
+        label = `${period} ${activityType === 'All' ? 'activities' : formatActivityLabel(activityType, true).toLowerCase()}`;
+        chartNote.textContent = 'Q1 view combines January, February, and March from the synced Strava dataset.';
       } else if (view === 'year') {
-        runs = [...janRuns, ...febRuns, ...marRuns, ...aprRuns];
-        label = 'Full Year 2026 runs';
-        statRunsLabel.textContent = 'in 2026';
-        statDistanceLabel.textContent = 'total 2026 distance';
-        statFastestLabel.textContent = 'fastest run in 2026';
-        statAverageLabel.textContent = 'average pace across 2026';
-        chartNote.textContent = 'Full year overview combining all months tracked so far.';
+        activities = [...janRuns, ...febRuns, ...marRuns, ...aprRuns];
+        label = `Full Year 2026 ${activityType === 'All' ? 'activities' : formatActivityLabel(activityType, true).toLowerCase()}`;
+        chartNote.textContent = 'Full year overview combining all synced Strava activity data tracked so far.';
       }
 
-      // Compute stats
-      const numRuns = runs.length;
-      const totalDist = runs.reduce((sum, r) => sum + r.distance, 0);
-      const fastest = runs.reduce((min, r) => toSeconds(r.time) < toSeconds(min) ? r.time : min, '99:99:99');
-      const totalTimeSec = runs.reduce((sum, r) => sum + toSeconds(r.time), 0);
-      const avgPaceSec = totalTimeSec / totalDist;
-      const avgPace = formatMinutes(Math.round(avgPaceSec));
+      const filteredActivities = activityType === 'All'
+        ? activities
+        : activities.filter(activity => activity.sportType === activityType);
 
-      statRuns.textContent = numRuns + ' Runs';
-      statDistance.textContent = totalDist.toFixed(2) + ' KM';
-      statFastest.textContent = fastest;
-      statAverage.textContent = avgPace + ' / KM';
+      if (!filteredActivities.length) {
+        const emptyLabel = activityType === 'All' ? 'Activities' : formatActivityLabel(activityType, true);
+        statRuns.textContent = `0 ${emptyLabel}`;
+        statRunsLabel.textContent = context;
+        statDistance.textContent = 'Runs • 0.00 KM';
+        statDistanceLabel.textContent = 'running distance';
+        statFastest.textContent = 'Walks • 0.00 KM';
+        statFastestLabel.textContent = 'walking distance';
+        statAverage.textContent = '0 Gym Sessions • 00:00';
+        statAverageLabel.textContent = 'gym time';
+        chartNote.textContent = `No ${activityType === 'All' ? 'activity' : formatActivityLabel(activityType, false).toLowerCase()} data available for this view yet.`;
+        drawRunChart([{ date: '2026-01-01', distance: 0, seconds: 15 * 60, time: '0:15:00', sportType: 'Activity', name: 'Awaiting more data' }], 'Awaiting more data');
+        return;
+      }
 
-      drawRunChart(runs, label);
+      if (activityType === 'All') {
+        const runActivities = filteredActivities.filter(activity => activity.sportType === 'Run');
+        const walkActivities = filteredActivities.filter(activity => activity.sportType === 'Walk');
+        const gymActivities = filteredActivities.filter(activity => activity.sportType === 'WeightTraining');
+        const otherActivities = filteredActivities.filter(activity => !['Run', 'Walk', 'WeightTraining'].includes(activity.sportType));
+
+        statRuns.textContent = `${filteredActivities.length} Activities`;
+        statRunsLabel.textContent = context;
+        statDistance.textContent = `${runActivities.length} Runs • ${sumDistance(runActivities).toFixed(2)} KM`;
+        statDistanceLabel.textContent = 'running distance';
+        statFastest.textContent = `${walkActivities.length} Walks • ${sumDistance(walkActivities).toFixed(2)} KM`;
+        statFastestLabel.textContent = 'walking distance';
+        statAverage.textContent = `${gymActivities.length} Gym Sessions • ${formatRunTime(formatDuration(sumSeconds(gymActivities)))}`;
+        statAverageLabel.textContent = 'gym time';
+        if (otherActivities.length) {
+          chartNote.textContent += ` Includes ${otherActivities.length} other logged activities as well.`;
+        }
+        drawRunChart(filteredActivities, label);
+        return;
+      }
+
+      const typeName = formatActivityLabel(activityType, false).toLowerCase();
+      const typePlural = formatActivityLabel(activityType, true);
+      const totalDist = sumDistance(filteredActivities);
+      const totalTimeSec = sumSeconds(filteredActivities);
+      const fastest = filteredActivities.reduce((min, activity) => activity.seconds < min.seconds ? activity : min, filteredActivities[0]);
+      const longest = filteredActivities.reduce((max, activity) => activity.seconds > max.seconds ? activity : max, filteredActivities[0]);
+      const avgDurationSec = totalTimeSec / filteredActivities.length;
+      const avgPaceSec = totalDist > 0 ? totalTimeSec / totalDist : 0;
+
+      statRuns.textContent = `${filteredActivities.length} ${typePlural}`;
+      statRunsLabel.textContent = context;
+
+      if ((activityType === 'Run' || activityType === 'Walk') && totalDist > 0) {
+        statDistance.textContent = `${totalDist.toFixed(2)} KM`;
+        statDistanceLabel.textContent = `total distance`;
+        statFastest.textContent = formatRunTime(fastest.time);
+        statFastestLabel.textContent = `fastest recorded ${typeName}`;
+        statAverage.textContent = `${formatMinutes(Math.round(avgPaceSec))} / KM`;
+        statAverageLabel.textContent = `average ${typeName} pace`;
+      } else {
+        statDistance.textContent = formatRunTime(formatDuration(totalTimeSec));
+        statDistanceLabel.textContent = `total time`;
+        statFastest.textContent = formatRunTime(longest.time);
+        statFastestLabel.textContent = `longest ${typeName} session`;
+        statAverage.textContent = formatRunTime(formatDuration(Math.round(avgDurationSec)));
+        statAverageLabel.textContent = `average ${typeName} session`;
+      }
+
+      drawRunChart(filteredActivities, label);
     }
 
     document.getElementById('viewSelect').addEventListener('change', () => {
@@ -821,6 +897,7 @@
     });
 
     document.getElementById('periodSelect').addEventListener('change', setStatsView);
+    document.getElementById('activityTypeSelect').addEventListener('change', setStatsView);
   </script>
 </body>
 </html>
