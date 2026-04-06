@@ -591,8 +591,8 @@
       return Math.floor((last - first) / (7 * 24 * 60 * 60 * 1000)) + 1;
     }
 
-    function getDistanceStats(runs, target, tolerance) {
-      const filtered = runs.filter(run => Math.abs(run.distance - target) <= tolerance);
+    function getDistanceStats(runs, minDistance, maxDistance) {
+      const filtered = runs.filter(run => run.distance >= minDistance && run.distance <= maxDistance);
       if (!filtered.length) {
         return { count: 0, fastest: '—' };
       }
@@ -612,9 +612,9 @@
       if (!runs.length) return;
 
       const totalDistance = runs.reduce((sum, run) => sum + run.distance, 0);
-      const fiveK = getDistanceStats(runs, 5, 0.2);
-      const tenK = getDistanceStats(runs, 10, 0.3);
-      const fifteenK = getDistanceStats(runs, 15, 0.5);
+      const fiveK = getDistanceStats(runs, 4.8, 6.2);
+      const tenK = getDistanceStats(runs, 9.5, 11.0);
+      const fifteenK = getDistanceStats(runs, 14.5, 16.2);
 
       document.getElementById('quickWeeks').textContent = `${getTrackedWeeks(runs)} Weeks`;
       document.getElementById('quickRuns').textContent = `${runs.length} Runs`;
