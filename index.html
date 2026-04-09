@@ -261,6 +261,35 @@
       margin-top: 12px;
     }
 
+    .activity-log {
+      margin-top: 16px;
+      border-top: 1px solid var(--border);
+      padding-top: 14px;
+    }
+
+    .activity-log h3 {
+      font-size: 1rem;
+      margin-bottom: 10px;
+      color: var(--text);
+    }
+
+    .activity-log-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 8px;
+    }
+
+    .activity-log-list li {
+      background: #f9fafb;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+
     footer {
       text-align: center;
       color: var(--muted);
@@ -503,6 +532,12 @@
             <p class="chart-note" id="chartNote">
               Loading synced Strava activity data for the interactive dashboard.
             </p>
+            <div class="activity-log">
+              <h3>Recent activities in this view</h3>
+              <ul class="activity-log-list" id="activityLogList">
+                <li>Loading activity details…</li>
+              </ul>
+            </div>
           </div>
         </div>
       </section>
@@ -749,6 +784,32 @@
       return items.reduce((sum, item) => sum + item.seconds, 0);
     }
 
+    function formatDisplayDate(dateString) {
+      const date = new Date(`${dateString}T00:00:00`);
+      return date.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: 'short'
+      });
+    }
+
+    function updateActivityLog(items) {
+      const activityLogList = document.getElementById('activityLogList');
+      if (!activityLogList) return;
+
+      if (!items.length) {
+        activityLogList.innerHTML = '<li>No activities available for this selection yet.</li>';
+        return;
+      }
+
+      const displayItems = [...items]
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
+        .slice(0, 10);
+
+      activityLogList.innerHTML = displayItems.map(item => (
+        `<li>${formatDisplayDate(item.date)} · ${item.sportType || 'Activity'} · ${item.distance.toFixed(2)} km · ${formatRunTime(item.time)}${item.name ? ` · ${item.name}` : ''}</li>`
+      )).join('');
+    }
+
     let janRuns = [];
     let febRuns = [];
     let marRuns = [];
@@ -835,6 +896,7 @@
         statAverage.textContent = '0 Gym Sessions • 00:00';
         statAverageLabel.textContent = 'gym time';
         chartNote.textContent = `No ${activityType === 'All' ? 'activity' : formatActivityLabel(activityType, false).toLowerCase()} data available for this view yet.`;
+        updateActivityLog([]);
         drawRunChart([{ date: '2026-01-01', distance: 0, seconds: 15 * 60, time: '0:15:00', sportType: 'Activity', name: 'Awaiting more data' }], 'Awaiting more data');
         return;
       }
@@ -856,6 +918,7 @@
         if (otherActivities.length) {
           chartNote.textContent += ` Includes ${otherActivities.length} other logged activities as well.`;
         }
+        updateActivityLog(filteredActivities);
         drawRunChart(filteredActivities, label);
         return;
       }
@@ -888,6 +951,7 @@
         statAverageLabel.textContent = `average ${typeName} session`;
       }
 
+      updateActivityLog(filteredActivities);
       drawRunChart(filteredActivities, label);
     }
 
