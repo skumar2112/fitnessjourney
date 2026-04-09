@@ -279,6 +279,8 @@
       margin: 0;
       display: grid;
       gap: 8px;
+      max-height: 420px;
+      overflow-y: auto;
     }
 
     .activity-log-list li {
@@ -341,11 +343,11 @@
         <span class="tag">Progress Journal 2026</span>
         <h1>Built on Consistency</h1>
         <p class="subtitle">
-          A simple public record of my running journey this year — showing up consistently, learning through the process,
-          and building strength step by step.
+          A simple public record of my running journey this year — built on consistency, learning through the process,
+          and getting stronger step by step.
         </p>
         <p class="subtitle">
-          A journey of showing up, learning through the process, and steadily building a stronger rhythm—one day at a time.
+          This is a quiet commitment to discipline, rhythm, and steady progress over time.
         </p>
         <p class="subtitle">
           No big plan. Just showing, one day at a time.
@@ -533,7 +535,7 @@
               Loading synced Strava activity data for the interactive dashboard.
             </p>
             <div class="activity-log">
-              <h3>Recent activities in this view</h3>
+              <h3>Activities in this view</h3>
               <ul class="activity-log-list" id="activityLogList">
                 <li>Loading activity details…</li>
               </ul>
@@ -802,8 +804,7 @@
       }
 
       const displayItems = [...items]
-        .sort((a, b) => new Date(b.date) - new Date(a.date))
-        .slice(0, 10);
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
 
       activityLogList.innerHTML = displayItems.map(item => (
         `<li>${formatDisplayDate(item.date)} · ${item.sportType || 'Activity'} · ${item.distance.toFixed(2)} km · ${formatRunTime(item.time)}${item.name ? ` · ${item.name}` : ''}</li>`
