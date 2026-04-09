@@ -1,21 +1,21 @@
 {
-  "generatedAt": "2026-04-09T08:17:26Z",
+  "generatedAt": "2026-04-09T14:26:28Z",
   "year": 2026,
   "summary": {
-    "totalActivities": 110,
-    "totalRuns": 69,
+    "totalActivities": 111,
+    "totalRuns": 70,
     "activityCounts": {
-      "Run": 69,
+      "Run": 70,
       "Walk": 29,
       "WeightTraining": 12
     },
     "activityDistanceKm": {
-      "Run": 390.23,
+      "Run": 395.47,
       "Walk": 46.27,
       "WeightTraining": 0.0
     },
     "activityTimeSeconds": {
-      "Run": 141131,
+      "Run": 142985,
       "Walk": 28114,
       "WeightTraining": 39054
     }
@@ -579,6 +579,14 @@
         "seconds": 1832,
         "sportType": "Run",
         "name": "Morning Run"
+      },
+      {
+        "date": "2026-04-09",
+        "distance": 5.24,
+        "time": "0:30:54",
+        "seconds": 1854,
+        "sportType": "Run",
+        "name": "Afternoon Run"
       }
     ],
     "May": [],
@@ -1477,6 +1485,14 @@
         "seconds": 1006,
         "sportType": "Walk",
         "name": "Afternoon Walk"
+      },
+      {
+        "date": "2026-04-09",
+        "distance": 5.24,
+        "time": "0:30:54",
+        "seconds": 1854,
+        "sportType": "Run",
+        "name": "Afternoon Run"
       }
     ],
     "May": [],
@@ -2040,6 +2056,14 @@
       "seconds": 1832,
       "sportType": "Run",
       "name": "Morning Run"
+    },
+    {
+      "date": "2026-04-09",
+      "distance": 5.24,
+      "time": "0:30:54",
+      "seconds": 1854,
+      "sportType": "Run",
+      "name": "Afternoon Run"
     }
   ],
   "activities": [
@@ -2922,6 +2946,14 @@
       "seconds": 1006,
       "sportType": "Walk",
       "name": "Afternoon Walk"
+    },
+    {
+      "date": "2026-04-09",
+      "distance": 5.24,
+      "time": "0:30:54",
+      "seconds": 1854,
+      "sportType": "Run",
+      "name": "Afternoon Run"
     }
   ]
 }
