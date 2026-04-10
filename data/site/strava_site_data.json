@@ -1,21 +1,21 @@
 {
-  "generatedAt": "2026-04-09T14:26:28Z",
+  "generatedAt": "2026-04-10T18:44:03Z",
   "year": 2026,
   "summary": {
-    "totalActivities": 111,
-    "totalRuns": 70,
+    "totalActivities": 113,
+    "totalRuns": 72,
     "activityCounts": {
-      "Run": 70,
+      "Run": 72,
       "Walk": 29,
       "WeightTraining": 12
     },
     "activityDistanceKm": {
-      "Run": 395.47,
+      "Run": 406.57,
       "Walk": 46.27,
       "WeightTraining": 0.0
     },
     "activityTimeSeconds": {
-      "Run": 142985,
+      "Run": 146777,
       "Walk": 28114,
       "WeightTraining": 39054
     }
@@ -587,6 +587,22 @@
         "seconds": 1854,
         "sportType": "Run",
         "name": "Afternoon Run"
+      },
+      {
+        "date": "2026-04-10",
+        "distance": 1.08,
+        "time": "0:06:58",
+        "seconds": 418,
+        "sportType": "Run",
+        "name": "Morning Run"
+      },
+      {
+        "date": "2026-04-10",
+        "distance": 10.02,
+        "time": "0:56:14",
+        "seconds": 3374,
+        "sportType": "Run",
+        "name": "Lunch Run"
       }
     ],
     "May": [],
@@ -1493,6 +1509,22 @@
         "seconds": 1854,
         "sportType": "Run",
         "name": "Afternoon Run"
+      },
+      {
+        "date": "2026-04-10",
+        "distance": 1.08,
+        "time": "0:06:58",
+        "seconds": 418,
+        "sportType": "Run",
+        "name": "Morning Run"
+      },
+      {
+        "date": "2026-04-10",
+        "distance": 10.02,
+        "time": "0:56:14",
+        "seconds": 3374,
+        "sportType": "Run",
+        "name": "Lunch Run"
       }
     ],
     "May": [],
@@ -2064,6 +2096,22 @@
       "seconds": 1854,
       "sportType": "Run",
       "name": "Afternoon Run"
+    },
+    {
+      "date": "2026-04-10",
+      "distance": 1.08,
+      "time": "0:06:58",
+      "seconds": 418,
+      "sportType": "Run",
+      "name": "Morning Run"
+    },
+    {
+      "date": "2026-04-10",
+      "distance": 10.02,
+      "time": "0:56:14",
+      "seconds": 3374,
+      "sportType": "Run",
+      "name": "Lunch Run"
     }
   ],
   "activities": [
@@ -2954,6 +3002,22 @@
       "seconds": 1854,
       "sportType": "Run",
       "name": "Afternoon Run"
+    },
+    {
+      "date": "2026-04-10",
+      "distance": 1.08,
+      "time": "0:06:58",
+      "seconds": 418,
+      "sportType": "Run",
+      "name": "Morning Run"
+    },
+    {
+      "date": "2026-04-10",
+      "distance": 10.02,
+      "time": "0:56:14",
+      "seconds": 3374,
+      "sportType": "Run",
+      "name": "Lunch Run"
     }
   ]
 }
