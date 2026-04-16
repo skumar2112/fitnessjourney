@@ -1,22 +1,22 @@
 {
-  "generatedAt": "2026-04-10T18:44:03Z",
+  "generatedAt": "2026-04-16T09:27:31Z",
   "year": 2026,
   "summary": {
-    "totalActivities": 113,
-    "totalRuns": 72,
+    "totalActivities": 118,
+    "totalRuns": 76,
     "activityCounts": {
-      "Run": 72,
-      "Walk": 29,
+      "Run": 76,
+      "Walk": 30,
       "WeightTraining": 12
     },
     "activityDistanceKm": {
-      "Run": 406.57,
-      "Walk": 46.27,
+      "Run": 423.34,
+      "Walk": 47.94,
       "WeightTraining": 0.0
     },
     "activityTimeSeconds": {
-      "Run": 146777,
-      "Walk": 28114,
+      "Run": 152462,
+      "Walk": 29178,
       "WeightTraining": 39054
     }
   },
@@ -603,6 +603,38 @@
         "seconds": 3374,
         "sportType": "Run",
         "name": "Lunch Run"
+      },
+      {
+        "date": "2026-04-11",
+        "distance": 5.27,
+        "time": "0:29:57",
+        "seconds": 1797,
+        "sportType": "Run",
+        "name": "Morning Run"
+      },
+      {
+        "date": "2026-04-12",
+        "distance": 1.0,
+        "time": "0:05:57",
+        "seconds": 357,
+        "sportType": "Run",
+        "name": "\ud83c\udfc3\ud83c\udffc\u200d\u2642\ufe0f with Harshu"
+      },
+      {
+        "date": "2026-04-12",
+        "distance": 5.28,
+        "time": "0:29:00",
+        "seconds": 1740,
+        "sportType": "Run",
+        "name": "Afternoon Run"
+      },
+      {
+        "date": "2026-04-15",
+        "distance": 5.22,
+        "time": "0:29:51",
+        "seconds": 1791,
+        "sportType": "Run",
+        "name": "Morning Run"
       }
     ],
     "May": [],
@@ -1525,6 +1557,46 @@
         "seconds": 3374,
         "sportType": "Run",
         "name": "Lunch Run"
+      },
+      {
+        "date": "2026-04-11",
+        "distance": 5.27,
+        "time": "0:29:57",
+        "seconds": 1797,
+        "sportType": "Run",
+        "name": "Morning Run"
+      },
+      {
+        "date": "2026-04-12",
+        "distance": 1.0,
+        "time": "0:05:57",
+        "seconds": 357,
+        "sportType": "Run",
+        "name": "\ud83c\udfc3\ud83c\udffc\u200d\u2642\ufe0f with Harshu"
+      },
+      {
+        "date": "2026-04-12",
+        "distance": 5.28,
+        "time": "0:29:00",
+        "seconds": 1740,
+        "sportType": "Run",
+        "name": "Afternoon Run"
+      },
+      {
+        "date": "2026-04-14",
+        "distance": 1.67,
+        "time": "0:17:44",
+        "seconds": 1064,
+        "sportType": "Walk",
+        "name": "Morning Walk"
+      },
+      {
+        "date": "2026-04-15",
+        "distance": 5.22,
+        "time": "0:29:51",
+        "seconds": 1791,
+        "sportType": "Run",
+        "name": "Morning Run"
       }
     ],
     "May": [],
@@ -2112,6 +2184,38 @@
       "seconds": 3374,
       "sportType": "Run",
       "name": "Lunch Run"
+    },
+    {
+      "date": "2026-04-11",
+      "distance": 5.27,
+      "time": "0:29:57",
+      "seconds": 1797,
+      "sportType": "Run",
+      "name": "Morning Run"
+    },
+    {
+      "date": "2026-04-12",
+      "distance": 1.0,
+      "time": "0:05:57",
+      "seconds": 357,
+      "sportType": "Run",
+      "name": "\ud83c\udfc3\ud83c\udffc\u200d\u2642\ufe0f with Harshu"
+    },
+    {
+      "date": "2026-04-12",
+      "distance": 5.28,
+      "time": "0:29:00",
+      "seconds": 1740,
+      "sportType": "Run",
+      "name": "Afternoon Run"
+    },
+    {
+      "date": "2026-04-15",
+      "distance": 5.22,
+      "time": "0:29:51",
+      "seconds": 1791,
+      "sportType": "Run",
+      "name": "Morning Run"
     }
   ],
   "activities": [
@@ -3018,6 +3122,46 @@
       "seconds": 3374,
       "sportType": "Run",
       "name": "Lunch Run"
+    },
+    {
+      "date": "2026-04-11",
+      "distance": 5.27,
+      "time": "0:29:57",
+      "seconds": 1797,
+      "sportType": "Run",
+      "name": "Morning Run"
+    },
+    {
+      "date": "2026-04-12",
+      "distance": 1.0,
+      "time": "0:05:57",
+      "seconds": 357,
+      "sportType": "Run",
+      "name": "\ud83c\udfc3\ud83c\udffc\u200d\u2642\ufe0f with Harshu"
+    },
+    {
+      "date": "2026-04-12",
+      "distance": 5.28,
+      "time": "0:29:00",
+      "seconds": 1740,
+      "sportType": "Run",
+      "name": "Afternoon Run"
+    },
+    {
+      "date": "2026-04-14",
+      "distance": 1.67,
+      "time": "0:17:44",
+      "seconds": 1064,
+      "sportType": "Walk",
+      "name": "Morning Walk"
+    },
+    {
+      "date": "2026-04-15",
+      "distance": 5.22,
+      "time": "0:29:51",
+      "seconds": 1791,
+      "sportType": "Run",
+      "name": "Morning Run"
     }
   ]
 }
