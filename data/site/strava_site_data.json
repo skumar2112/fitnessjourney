@@ -1,21 +1,21 @@
 {
-  "generatedAt": "2026-05-02T21:31:03Z",
+  "generatedAt": "2026-05-07T08:26:02Z",
   "year": 2026,
   "summary": {
-    "totalActivities": 138,
-    "totalRuns": 93,
+    "totalActivities": 141,
+    "totalRuns": 96,
     "activityCounts": {
-      "Run": 93,
+      "Run": 96,
       "Walk": 31,
       "WeightTraining": 14
     },
     "activityDistanceKm": {
-      "Run": 510.23,
+      "Run": 525.55,
       "Walk": 49.58,
       "WeightTraining": 0.0
     },
     "activityTimeSeconds": {
-      "Run": 182275,
+      "Run": 187579,
       "Walk": 30078,
       "WeightTraining": 44804
     }
@@ -773,6 +773,30 @@
         "seconds": 1777,
         "sportType": "Run",
         "name": "Morning Run"
+      },
+      {
+        "date": "2026-05-03",
+        "distance": 5.1,
+        "time": "0:30:57",
+        "seconds": 1857,
+        "sportType": "Run",
+        "name": "Evening Run"
+      },
+      {
+        "date": "2026-05-05",
+        "distance": 5.13,
+        "time": "0:29:29",
+        "seconds": 1769,
+        "sportType": "Run",
+        "name": "Morning Run"
+      },
+      {
+        "date": "2026-05-06",
+        "distance": 5.09,
+        "time": "0:27:58",
+        "seconds": 1678,
+        "sportType": "Run",
+        "name": "Evening Run"
       }
     ],
     "June": [],
@@ -1896,6 +1920,30 @@
         "seconds": 1777,
         "sportType": "Run",
         "name": "Morning Run"
+      },
+      {
+        "date": "2026-05-03",
+        "distance": 5.1,
+        "time": "0:30:57",
+        "seconds": 1857,
+        "sportType": "Run",
+        "name": "Evening Run"
+      },
+      {
+        "date": "2026-05-05",
+        "distance": 5.13,
+        "time": "0:29:29",
+        "seconds": 1769,
+        "sportType": "Run",
+        "name": "Morning Run"
+      },
+      {
+        "date": "2026-05-06",
+        "distance": 5.09,
+        "time": "0:27:58",
+        "seconds": 1678,
+        "sportType": "Run",
+        "name": "Evening Run"
       }
     ],
     "June": [],
@@ -2650,6 +2698,30 @@
       "seconds": 1777,
       "sportType": "Run",
       "name": "Morning Run"
+    },
+    {
+      "date": "2026-05-03",
+      "distance": 5.1,
+      "time": "0:30:57",
+      "seconds": 1857,
+      "sportType": "Run",
+      "name": "Evening Run"
+    },
+    {
+      "date": "2026-05-05",
+      "distance": 5.13,
+      "time": "0:29:29",
+      "seconds": 1769,
+      "sportType": "Run",
+      "name": "Morning Run"
+    },
+    {
+      "date": "2026-05-06",
+      "distance": 5.09,
+      "time": "0:27:58",
+      "seconds": 1678,
+      "sportType": "Run",
+      "name": "Evening Run"
     }
   ],
   "activities": [
@@ -3756,6 +3828,30 @@
       "seconds": 1777,
       "sportType": "Run",
       "name": "Morning Run"
+    },
+    {
+      "date": "2026-05-03",
+      "distance": 5.1,
+      "time": "0:30:57",
+      "seconds": 1857,
+      "sportType": "Run",
+      "name": "Evening Run"
+    },
+    {
+      "date": "2026-05-05",
+      "distance": 5.13,
+      "time": "0:29:29",
+      "seconds": 1769,
+      "sportType": "Run",
+      "name": "Morning Run"
+    },
+    {
+      "date": "2026-05-06",
+      "distance": 5.09,
+      "time": "0:27:58",
+      "seconds": 1678,
+      "sportType": "Run",
+      "name": "Evening Run"
     }
   ]
 }
